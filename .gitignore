@@ -12,7 +12,6 @@
 *.pch
 
 # Compiled Dynamic libraries
-*.so
 *.dylib
 *.dll
 
@@ -30,3 +29,13 @@
 *.exe
 *.out
 *.app
+
+
+#
+*.mp4
+*__pycache__
+*.vscode
+*.weights
+*CmakeFiles
+*build
+
