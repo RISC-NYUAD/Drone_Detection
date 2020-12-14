@@ -29,7 +29,7 @@ double get_time_point() {
 
 int main()
 {
-    string cfgfile = "../../cfg/yolov4-tiny-3l-drone.cfg";//读取模型文件，请自行修改相应路径
+    string cfgfile = "../../cfg/yolov4-tiny-3l-drone.cfg";
     string weightfile = "../../weights/yolov4-tiny-3l-drone.weights";
     float thresh=0.5;//参数设置
     float nms=0.35;
@@ -37,9 +37,9 @@ int main()
 
     string fpsString = to_string(0);
 
-    network *net= load_network((char*)cfgfile.c_str(),(char*)weightfile.c_str(),0);//加载网络模型
+    network *net= load_network((char*)cfgfile.c_str(),(char*)weightfile.c_str(),0);
     //set_batch_network(net, 1);
-    VideoCapture capture("../../demo/cut_drone.mp4");//读取视频，请自行修改相应路径
+    VideoCapture capture("../../demo/cut_drone.mp4");
     capture.set(CV_CAP_PROP_FRAME_WIDTH,1920);
     capture.set(CV_CAP_PROP_FRAME_HEIGHT,1080);
     Mat frame;
@@ -50,7 +50,7 @@ int main()
     image srcImg = make_image(w, h, c);
 
     vector<string> classNamesVec;
-    ifstream classNamesFile("../../cfg/drone.names");//标签文件coco有80类
+    ifstream classNamesFile("../../cfg/drone.names");
 
     if (classNamesFile.is_open()){
         string className = "";
@@ -72,12 +72,12 @@ int main()
         //float* srcImg;
         //size_t srcSize=rgbImg.rows*rgbImg.cols*3*sizeof(float);
         //srcImg=(float*)malloc(srcSize);
-        //imgConvert(rgbImg, srcImg);//将图像转为yolo形式
+        //imgConvert(rgbImg, srcImg);
 
         //float* resizeImg;
         //size_t resizeSize=net->w*net->h*3*sizeof(float);
         //resizeImg=(float*)malloc(resizeSize);
-        //imgResize(srcImg,resizeImg,frame.cols,frame.rows,net->w,net->h);//缩放图像
+        //imgResize(srcImg,resizeImg,frame.cols,frame.rows,net->w,net->h);
         resize(frame, rgbImg, cv::Size(w,h),0,0,CV_INTER_LINEAR);
         copy_image_from_bytes(srcImg, (char*)rgbImg.data);
         double before = get_time_point();
