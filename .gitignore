@@ -33,6 +33,7 @@
 
 #
 *.mp4
+*.avi
 *__pycache__
 *.vscode
 *.weights

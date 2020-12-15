@@ -54,6 +54,40 @@ make
 ```
 4. The excuate file is under build folder `./YoloDroneDetection`
 
+
+## Test with CPU + opencv or OPENCL + opencv
+The speed on cpu with opencv can achieve 35 fps!!!
+
+1. Install OpenCV3.4.10 (or Higher) with CUDA support(if CUDA needed)
+Under opencv folder, change the configuration in main.cpp line 89-96, default is using cpu for inference.
+
+```
+//net.setPreferableBackend(cv::dnn::DNN_BACKEND_CUDA);  //If use cuda for backend
+//net.setPreferableTarget(cv::dnn::DNN_TARGET_CUDA);    //If use cuda for optimization
+
+net.setPreferableBackend(cv::dnn::DNN_BACKEND_OPENCV);  //If use cpu for backend
+net.setPreferableTarget(cv::dnn::DNN_TARGET_CPU);       //If use cpu for optimization
+
+//net.setPreferableBackend(cv::dnn::DNN_BACKEND_OPENCV);  //If use cpu for detection
+//net.setPreferableTarget(cv::dnn::DNN_TARGET_OPENCL);   //If use opencl for optimization
+//net.setPreferableTarget(cv::dnn::DNN_TARGET_OPENCL_FP16); // or use opencl fp16 for  optimization
+
+//net.setPreferableBackend(cv::dnn::DNN_BACKEND_INFERENCE_ENGINE);
+//net.setPreferableTarget(cv::dnn::DNN_TARGET_CPU);
+```
+2. compile main.cpp
+
+```
+g++ -o main  main.cpp  `pkg-config opencv4 --cflags --libs`
+```
+
+3. run 
+
+```
+./main ../cfg/yolov4-tiny-3l-drone.cfg ../weights/yolov4-tiny-3l-drone.weights ../demo/cut_drone.mp4 ../cfg/drone.names
+```
+
+
 ## TODO
 
 + C++ multithread and memory safe 

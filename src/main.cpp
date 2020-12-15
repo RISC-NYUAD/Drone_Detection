@@ -20,6 +20,25 @@ float get_color(int c, int x, int max)
     return r;
 }
 
+void copy_image_from_bytes(image im, char *pdata)
+{
+    unsigned char *data = (unsigned char*)pdata;
+    int i, k, j;
+    int w = im.w;
+    int h = im.h;
+    int c = im.c;
+    for (k = 0; k < c; ++k) {
+        for (j = 0; j < h; ++j) {
+            for (i = 0; i < w; ++i) {
+                int dst_index = i + w * j + w * h*k;
+                int src_index = k + c * i + c * w*j;
+                im.data[dst_index] = (float)data[src_index] / 255.;
+            }
+        }
+    }
+}
+
+
 double get_time_point() {
     std::chrono::steady_clock::time_point current_time = std::chrono::steady_clock::now();
     //uint64_t now = std::chrono::duration_cast<std::chrono::milliseconds>(current_time.time_since_epoch()).count();
@@ -27,10 +46,20 @@ double get_time_point() {
 }
 
 
-int main()
+int main(int argc, char* argv[])
 {
     string cfgfile = "../../cfg/yolov4-tiny-3l-drone.cfg";
+    if(argc > 1)
+        cfgfile = argv[1]; 
     string weightfile = "../../weights/yolov4-tiny-3l-drone.weights";
+    if(argc > 2)
+        weightfile = argv[2]; 
+    string videopath = "../../demo/cut_drone.mp4";
+    if(argc > 3)
+        videopath = argv[3]; 
+    string namefilepath = "../../cfg/drone.names";
+    if(argc > 4)
+        namefilepath = argv[4]; 
     float thresh=0.5;//参数设置
     float nms=0.35;
     int classes=1;
@@ -39,7 +68,7 @@ int main()
 
     network *net= load_network((char*)cfgfile.c_str(),(char*)weightfile.c_str(),0);
     //set_batch_network(net, 1);
-    VideoCapture capture("../../demo/cut_drone.mp4");
+    VideoCapture capture(videopath);
     capture.set(CV_CAP_PROP_FRAME_WIDTH,1920);
     capture.set(CV_CAP_PROP_FRAME_HEIGHT,1080);
     Mat frame;
@@ -50,7 +79,7 @@ int main()
     image srcImg = make_image(w, h, c);
 
     vector<string> classNamesVec;
-    ifstream classNamesFile("../../cfg/drone.names");
+    ifstream classNamesFile(namefilepath);
 
     if (classNamesFile.is_open()){
         string className = "";
@@ -77,7 +106,7 @@ int main()
         //float* resizeImg;
         //size_t resizeSize=net->w*net->h*3*sizeof(float);
         //resizeImg=(float*)malloc(resizeSize);
-        //imgResize(srcImg,resizeImg,frame.cols,frame.rows,net->w,net->h);
+        //imgResize(srcImg,resizeImg,frame.cols,frame.rows,net->w,net->h);//缩放图像
         resize(frame, rgbImg, cv::Size(w,h),0,0,CV_INTER_LINEAR);
         copy_image_from_bytes(srcImg, (char*)rgbImg.data);
         double before = get_time_point();
